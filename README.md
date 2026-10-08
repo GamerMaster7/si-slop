@@ -91,6 +91,15 @@ It stays a quiet branch; vanilla briefs never see it. The protocol lives in [`cu
 
 ---
 
+## Before/after example
+
+The same plain ops dashboard, before and after `hallmark redesign` (modern-minimal genre, Stat-Led macrostructure, Cobalt theme).
+
+- Before: https://skill-fixture-before.theroost.dev?vr_gallery=1
+- After (hallmark): https://hallmark-after.theroost.dev?vr_gallery=1
+
+---
+
 ## Install
 
 ```
