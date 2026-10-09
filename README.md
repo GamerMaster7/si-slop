@@ -98,7 +98,7 @@ The same plain ops dashboard, before and after `hallmark redesign` (modern-minim
 - Before: https://skill-fixture-before.theroost.dev?vr_gallery=1
 - After (hallmark): https://hallmark-after.theroost.dev?vr_gallery=1
 
-Illustrative, author-supplied example: Vibe Rooster applied the `hallmark` skill to the same page content. It is not a benchmark or an official demo.
+Illustrative, community-contributed example; not an official demo or benchmark.
 
 ---
 
