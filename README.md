@@ -82,6 +82,17 @@ Hallmark never starts on a design that already exists unless you name it:
 
 A full redesign keeps the content and the wiring and changes the system and the layout; say *keep the layout* for a restyle or *polish* for only the tells. `sloplint --before` records every link, field, handler and heading first, `sloplint --kept` fails the redesign if one went missing, and the handoff is a side-by-side before and after.
 
+## Before/after example
+
+The same plain ops dashboard, before and after `hallmark redesign` (modern-minimal genre, Stat-Led macrostructure, Cobalt theme).
+
+- Before: https://skill-fixture-before.theroost.dev?vr_gallery=1
+- After (hallmark): https://hallmark-after.theroost.dev?vr_gallery=1
+
+Illustrative, community-contributed example; not an official demo or benchmark.
+
+---
+
 ## Install
 
 ```
