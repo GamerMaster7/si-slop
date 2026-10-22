@@ -103,7 +103,7 @@ npx skills add nutlope/hallmark -g
 - **Lint any page:** `node skills/hallmark/scripts/sloplint.mjs <file-or-dir> --render`.
 - **If it does not fire on its own,** name it: *use hallmark to build ...*. Worked examples in [`docs/recipes.md`](docs/recipes.md).
 
-## Licence
+## License
 
 MIT. Use it, fork it, ship it.
 
