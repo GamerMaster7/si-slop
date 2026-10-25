@@ -69,7 +69,13 @@ function buildIndex() {
     if (slugs.has(e.slug)) throw new Error(`duplicate slug ${e.slug}`);
     slugs.add(e.slug);
   }
-  writeFileSync(INDEX, JSON.stringify({ built: new Date().toISOString().slice(0, 10), themes: entries }, null, 1) + '\n');
+  let built = new Date().toISOString().slice(0, 10);
+  try {
+    const previous = JSON.parse(readFileSync(INDEX, 'utf8'));
+    // Keep an unchanged catalog stable across days, including the CI freshness check.
+    if (JSON.stringify(previous.themes) === JSON.stringify(entries) && typeof previous.built === 'string') built = previous.built;
+  } catch {} // A missing or malformed index is rebuilt below.
+  writeFileSync(INDEX, JSON.stringify({ built, themes: entries }, null, 1) + '\n');
   return entries;
 }
 
