@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { readFileSync, writeFileSync, readdirSync, statSync, existsSync, mkdtempSync, copyFileSync, rmSync } from 'node:fs';
+import { readFileSync, writeFileSync, readdirSync, statSync, existsSync, mkdtempSync, mkdirSync, copyFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname, relative, basename, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -229,6 +229,37 @@ const index = JSON.parse(read(join(THEME_DIR, 'index.json')));
 const indexed = new Set(index.themes.map((t) => t.slug));
 for (const f of themeFiles) if (!indexed.has(basename(f, '.md'))) add('error', f, 1, 'index', 'theme missing from index.json (run theme.mjs index)');
 for (const t of index.themes) if (!existsSync(join(ROOT, t.file))) add('error', join(THEME_DIR, 'index.json'), 1, 'index', `index lists ${t.file}, which does not exist`);
+
+const indexTmp = mkdtempSync(join(tmpdir(), 'hallmark-index-'));
+try {
+  const scripts = join(indexTmp, 'scripts');
+  const themes = join(indexTmp, 'references', 'themes');
+  mkdirSync(scripts, { recursive: true });
+  mkdirSync(themes, { recursive: true });
+  const script = join(scripts, 'theme.mjs');
+  copyFileSync(join(ROOT, 'scripts', 'theme.mjs'), script);
+  const source = join(themes, basename(themeFiles[0]));
+  copyFileSync(themeFiles[0], source);
+  const output = join(themes, 'index.json');
+  const generate = () => {
+    const run = spawnSync(process.execPath, [script, 'index'], { encoding: 'utf8', cwd: indexTmp });
+    if (run.status !== 0) throw new Error(run.stderr || 'index command failed');
+    return JSON.parse(read(output));
+  };
+  const first = generate();
+  first.built = '2000-01-01';
+  const old = JSON.stringify(first, null, 1) + '\n';
+  writeFileSync(output, old);
+  generate();
+  if (read(output) !== old) add('error', join(ROOT, 'scripts', 'theme.mjs'), 1, 'index', 'unchanged themes must preserve the index across build dates');
+  writeFileSync(source, read(source).replace(/^name: .+$/m, 'name: Changed theme'));
+  const changed = generate();
+  if (changed.themes[0].name !== 'Changed theme' || changed.built === first.built) add('error', join(ROOT, 'scripts', 'theme.mjs'), 1, 'index', 'changed theme metadata must update the index and its build date');
+  writeFileSync(output, '{');
+  if (generate().themes[0].name !== 'Changed theme') add('error', join(ROOT, 'scripts', 'theme.mjs'), 1, 'index', 'index generation must still rebuild malformed JSON');
+} catch (e) {
+  add('error', join(ROOT, 'scripts', 'theme.mjs'), 1, 'index', `index CLI regression failed: ${e.message}`);
+} finally { rmSync(indexTmp, { recursive: true, force: true }); }
 
 const fontsSrc = read(join(ROOT, 'references', 'fonts.md'));
 const unusedTable = fontsSrc.slice(fontsSrc.indexOf('## Display faces the catalog does not use'), fontsSrc.indexOf('## Body faces'));
