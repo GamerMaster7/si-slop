@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { readFileSync, readdirSync, statSync, existsSync, mkdtempSync, copyFileSync, rmSync } from 'node:fs';
+import { readFileSync, writeFileSync, readdirSync, statSync, existsSync, mkdtempSync, copyFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname, relative, basename, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -300,6 +300,24 @@ for (const [name, ok, msg] of existsSync(FIX) ? expectations : []) {
   if (!j) add('error', target, 1, 'fixture', 'sloplint did not run on this fixture');
   else if (!ok(j)) add('error', target, 1, 'fixture', msg);
 }
+
+const cliTmp = mkdtempSync(join(tmpdir(), 'hallmark-cli-'));
+try {
+  const valid = join(cliTmp, 'valid.css');
+  const missing = join(cliTmp, 'missing.css');
+  writeFileSync(valid, '/* Hallmark · component: text */\np { color: var(--color-text); }\n');
+  const script = join(ROOT, 'scripts', 'sloplint.mjs');
+  const run = (paths) => spawnSync(process.execPath, [script, ...paths, '--scope', 'component', '--tier', 'floor', '--json'], { encoding: 'utf8', cwd: cliTmp });
+  const cleanRun = run([valid]);
+  let cleanReport = null;
+  try { cleanReport = JSON.parse(cleanRun.stdout); } catch {}
+  if (cleanRun.status !== 0 || cleanReport?.summary.files !== 1 || cleanReport?.summary.fails !== 0) add('error', script, 1, 'cli', 'a readable clean input must still pass');
+  for (const extra of [[], ['--before']]) {
+    const failed = run([valid, missing, ...extra]);
+    if (failed.status !== 2 || !failed.stderr.includes(`cannot read ${missing}`) || failed.stdout.trim()) add('error', script, 1, 'cli', `a missing input alongside a clean file must exit 2 without a success report${extra.length ? ' in --before mode' : ''}`);
+  }
+  if (existsSync(join(cliTmp, '.hallmark', 'before.json'))) add('error', script, 1, 'cli', 'unreadable input must not create a partial before snapshot');
+} finally { rmSync(cliTmp, { recursive: true, force: true }); }
 
 const keptDir = join(FIX, 'kept');
 if (existsSync(keptDir)) {
