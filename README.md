@@ -78,9 +78,10 @@ Hallmark never starts on a design that already exists unless you name it:
 ```
 /hallmark redesign ./src/app
 /hallmark audit ./index.html
+/hallmark audit ./src/app --accessibility
 ```
 
-A full redesign keeps the content and the wiring and changes the system and the layout; say *keep the layout* for a restyle or *polish* for only the tells. `sloplint --before` records every link, field, handler and heading first, `sloplint --kept` fails the redesign if one went missing, and the handoff is a side-by-side before and after.
+A full redesign keeps the content and the wiring and changes the system and the layout; say *keep the layout* for a restyle or *polish* for only the tells. `sloplint --before` records every link, field, handler and heading first, `sloplint --kept` fails the redesign if one went missing, and the handoff is a side-by-side before and after. The accessibility audit returns an evidence-labelled WCAG 2.2 AA receipt and keeps untested keyboard, input and assistive-technology paths explicit.
 
 ## Install
 
