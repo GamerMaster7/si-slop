@@ -29,6 +29,7 @@ function usage() {
   console.error('reads .html and .css, plus .jsx .tsx .vue .svelte .astro (Tailwind class strings, cn/clsx/cva calls); skips node_modules, dist, build, coverage and dot folders');
 }
 if (!opts.paths.length && !opts.urls.length) { usage(); process.exit(2); }
+if (opts.tier !== null && !['floor', 'reflex', 'finish', 'ledger'].includes(opts.tier)) { console.error('--tier must be floor, reflex, finish or ledger'); process.exit(2); }
 if (!['hero', 'page'].includes(opts.stage)) { console.error('--stage must be hero or page'); process.exit(2); }
 if (opts.urls.some((u) => !/^https?:\/\//.test(u || ''))) { console.error('--url takes an http or https address'); process.exit(2); }
 if (opts.genre && !GENRES.includes(opts.genre)) {
