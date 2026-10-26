@@ -1,7 +1,7 @@
 ---
 name: hallmark
 description: "Design skill for websites and new pages that look designed, not generated. Use when the user asks to build or design something new, or names Hallmark. Never use it on an existing design unless the user names Hallmark, as in `/hallmark redesign <path>`."
-argument-hint: "<prompt> | redesign <path> | audit <path>"
+argument-hint: "<prompt> | redesign <path> | audit <path> [--accessibility]"
 version: 2.0.0
 metadata:
   opencode/slash: "true"
@@ -47,7 +47,7 @@ Above the Floor, a **Reflex** gate is a default a model falls into, waivable on 
 6. Build: the hero first, then the page; stamp, `tokens.css`, log.
 7. Sweep: `sloplint --render` until clean, the judged gates, the finish review, the material ask.
 
-**Verbs,** only when the user names Hallmark: `redesign <target>` (a full redesign keeping content and wiring) and `audit <target>` (a report); read [`references/redesign.md`](references/redesign.md) first. Any other change to an existing design is not a Hallmark run: do it as asked, in the project's own system.
+**Verbs,** only when the user names Hallmark: `redesign <target>` (a full redesign keeping content and wiring) and `audit <target>` (a report); read [`references/redesign.md`](references/redesign.md) first. `audit <target> --accessibility` also reads [`references/accessibility-audit.md`](references/accessibility-audit.md) and returns its evidence-labelled receipt; automated findings alone never establish conformance. Any other change to an existing design is not a Hallmark run: do it as asked, in the project's own system.
 
 Codex CLI and OpenCode read `references/flow.md` § Harnesses first; other harnesses run this file as written.
 
