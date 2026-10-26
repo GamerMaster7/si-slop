@@ -11,6 +11,20 @@ const MATCHER = "Write|Edit|MultiEdit";
 const args = process.argv.slice(2);
 const has = (f) => args.includes(f);
 
+const USAGE = `node install-hook.mjs [--global] [--print] [--remove]
+
+  Installs the Hallmark edit-time lint hook into .claude/settings.json of the current project.
+  --global  use ~/.claude/settings.json instead
+  --print   show the settings entry and change nothing
+  --remove  take the hook out again`;
+const FLAGS = ["--global", "--print", "--remove", "--help", "-h"];
+const unknown = args.filter((a) => !FLAGS.includes(a));
+if (has("--help") || has("-h") || unknown.length) {
+  if (unknown.length) console.error(`Unknown option: ${unknown.join(" ")}\n`);
+  console.log(USAGE);
+  process.exit(unknown.length ? 1 : 0);
+}
+
 const settingsPath = has("--global")
   ? join(homedir(), ".claude", "settings.json")
   : join(process.cwd(), ".claude", "settings.json");
